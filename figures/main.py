@@ -1,40 +1,79 @@
-from scipy.datasets import face
-from skimage.measure import label
-from skimage.morphology import (
-    binary_closing,
-    binary_dilation,
-    binary_opening,
-    binary_erosion,
-)
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+from skimage.measure import label
 
-arr = np.array(
-    [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+from scipy.ndimage import morphology
+
+data = np.load("ps.npy.txt")
+
+labeled = label(data)
+mask1 = [[1,1,1,1],
+         [1,1,1,1],
+         [0,0,1,1],
+         [0,0,1,1],
+         [1,1,1,1],
+         [1,1,1,1]]
+
+mask2 = [
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1]
     ]
-)
 
-image = np.load("wires6.npy.txt")
+mask3 = [[1,1,1,1],
+         [1,1,1,1],
+         [1,1,0,0],
+         [1,1,0,0],
+         [1,1,1,1],
+         [1,1,1,1]]
 
-labeled = label(image)
+mask4 = np.array([
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1]
+    ])
 
-for lbl in range(1, labeled.max() + 1):
-    count = label(binary_erosion(labeled == lbl)).max()
-    
-    if count > 1:
-        print(f"{lbl} провод разделяется {count} раз(а)")
-    else:
-        print(f"{lbl} провод не разделен")
-    
-plt.imshow(label(image))
+mask5 =  np.array([
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1]
+    ])
+
+
+erosed1 = morphology.binary_erosion(data,mask1)
+dilation = morphology.binary_dilation(erosed1, mask1)
+data -= dilation
+obj = label(dilation).max()
+print(obj)
+
+erosed2 = morphology.binary_erosion(data,mask2)
+dilation2 = morphology.binary_dilation(erosed2, mask2)
+data -= dilation2
+obj1 = label(dilation2).max()
+print(obj1)
+
+erosed3 = morphology.binary_erosion(data,mask3)
+dilation3 = morphology.binary_dilation(erosed3, mask3)
+data -= dilation3
+obj2 = label(dilation3).max()
+print(obj2)
+
+erosed4 = morphology.binary_erosion(data,mask4)
+dilation4 = morphology.binary_dilation(erosed4, mask4)
+data -= dilation4
+obj3 = label(dilation4).max()
+print(obj3)
+
+
+erosed5 = morphology.binary_erosion(data,mask5)
+dilation5 = morphology.binary_dilation(erosed5, mask5)
+data -= dilation5
+obj4 = label(dilation5).max()
+print(obj4)
+
+plt.title(f"СУММА = {labeled.max()}")
+plt.imshow(labeled)
 plt.show()
