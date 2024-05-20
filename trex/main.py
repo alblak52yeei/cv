@@ -9,7 +9,7 @@ dino_img = cv.imread("t-rex.png")
 dino_img = cv.cvtColor(dino_img, cv.COLOR_RGB2GRAY)
 
 
-monitor = {"top": 0, "left": 0, "width": 2560, "height": 1440 }
+monitor = {"top": 0, "left": 0, "width": 1920, "height": 1080}
 
 frame_rate = 120
 frame_duration = 1.0 / frame_rate
@@ -58,7 +58,7 @@ with mss() as sct:
             # Получаем координаты ограничивающего прямоугольника для текущего контура
             x, y, w, h = cv.boundingRect(contour)
 
-            if time() - start < 45: agr = 30
+            if time() - start < 50: agr = 20
             else: agr = 45
 
             timer = min(time() - start, 330)
@@ -71,9 +71,9 @@ with mss() as sct:
                         sleeper += 0.1
 
                     inp.press("up")
-                    sleep(sleeper/4)
+                    sleep(sleeper / 4)
                     inp.keyDown("down")
-                    sleep(0.015)
+                    sleep(0.02)
                     inp.keyUp("down")
                 else:
                     inp.keyDown("down")
